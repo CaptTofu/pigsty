@@ -83,6 +83,19 @@
       copy: src=policy-rc.d dest=/usr/sbin/policy-rc.d mode=0755
       when: os_package == 'deb'
 
+    # workaround
+    - name: workaround copy back apt repo file
+      ansible.builtin.copy:
+        src: sources.list
+        dest: /etc/apt/sources.list
+      when: os_package == 'deb'
+
+    - name: workaround repo file
+      ansible.builtin.shell:
+        cmd: apt update
+      when: os_package == 'deb'
+
+
     - name: install default node packages
       environment: "{{ proxy_env | default({}) }}"
       package: name={{ item }}

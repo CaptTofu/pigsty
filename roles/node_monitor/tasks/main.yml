@@ -235,17 +235,36 @@
 #--------------------------------------------------------------#
 - name: install promtail
   tags: promtail_install
-  ignore_errors: "{{ not promtail_enabled|bool }}"  # ignore errors if not enabled
-  block:
-    - name: install promtail systemd service
-      package: name=promtail state=present
-    - name: remove promtail /etc/systemd service
-      file: dest=/etc/systemd/system/promtail.service state=absent
-
-    - name: create promtail systemd service
-      copy: src=promtail.service dest={{ systemd_dir }}/promtail.service
-      vars: { systemd_dir: "{% if os_package is defined and os_package == 'deb' %}/lib/systemd/system/{% else %}/usr/lib/systemd/system{% endif %}" }
-
+  debug: 
+    msg: skipping, no free package, no package named this
+#   ignore_errors: "{{ not promtail_enabled|bool }}"  # ignore errors if not enabled
+#   block:
+#     - name: set up promtail repo
+#       apt_repository:
+#         repo: deb https://packagecloud.io/grafana/stable/ubuntu/ focal main
+#       # workaround 
+#       # when: debian
+# 
+#     - name: apt update
+#       shell:
+#         cmd: apt update
+#       # workaround 
+#       # when: debian
+#       # doesn't work
+# 
+#     - name: install promtail systemd service
+#       package: name=promtail state=present
+#       # workaround
+#       # doesn't work
+# 
+# 
+#     - name: remove promtail /etc/systemd service
+#       file: dest=/etc/systemd/system/promtail.service state=absent
+# 
+#     - name: create promtail systemd service
+#       copy: src=promtail.service dest={{ systemd_dir }}/promtail.service
+#       vars: { systemd_dir: "{% if os_package is defined and os_package == 'deb' %}/lib/systemd/system/{% else %}/usr/lib/systemd/system{% endif %}" }
+# 
 #--------------------------------------------------------------#
 # Launch Promtail                              [promtail_launch]
 #--------------------------------------------------------------#
@@ -256,8 +275,8 @@
 
     - name: restart promtail systemd service
       systemd: name=promtail state=restarted enabled=yes daemon_reload=yes
-    - name: wait for promtail service online
-      wait_for: host=127.0.0.1 port={{ promtail_port }} state=started timeout=20
+        #- name: wait for promtail service online
+        #wait_for: host=127.0.0.1 port={{ promtail_port }} state=started timeout=20
 
 
 #--------------------------------------------------------------#

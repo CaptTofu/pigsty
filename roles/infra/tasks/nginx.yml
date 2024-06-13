@@ -160,7 +160,9 @@
         content: 'NGINX_EXPORTER_OPTS="-nginx.scrape-uri http://127.0.0.1:80/nginx"'
 
     - name: restart nginx_exporter service
-      systemd: name=nginx_exporter state=restarted enabled=yes daemon_reload=yes
+      # workaround
+      #systemd: name=nginx_exporter state=restarted enabled=yes daemon_reload=yes
+      systemd: name=prometheus-nginx-exporter state=restarted enabled=yes daemon_reload=yes
 
     - name: wait for nginx exporter
       wait_for: host=127.0.0.1 port=9113 state=started timeout=10

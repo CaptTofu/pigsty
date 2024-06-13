@@ -2,16 +2,41 @@
 #--------------------------------------------------------------#
 # Install PostgreSQL Packages                           [pg_pkg]
 #--------------------------------------------------------------#
+# workaround - apt repository
 - name: install postgres packages
   become: yes
   tags: pg_pkg
+
   block:
+
+    - name: setup postgresql.org's gpg key
+      ansible.builtin.apt_key:
+        state: present
+        url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+
+    - name: set up apt repo for postgresql16
+      ansible.builtin.apt_repository: 
+        repo: "deb http://apt.postgresql.org/pub/repos/apt jammy-pgdg main"
+        state: present
+        update_cache: yes
 
     # install postgres basic packages
     - name: install postgres packages
       environment: "{{ proxy_env | default({}) }}"
       package: name={{ item|replace('${pg_version}', pg_version|string)|replace('$v', pg_version|string)|regex_replace('\s+',',') }}
       with_items: "{{ pg_packages }}"
+
+        # big mess
+#     # set up timescale DB key and repo
+#     - name: workaround- timescale add key
+#       ignore_errors: true
+#       ansible.builtin.shell:
+#         cmd: "apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 55EE6BF7698E3D58D72C0DD9ECB3980CC59E610B"
+# 
+#     - name: workaround- timescale db repo
+#       ansible.builtin.shell
+#         cmd: "tee /etc/apt/sources.list.d/timescale-ubuntu-timescaledb-ppa-jammy.list<<EOF deb https://ppa.launchpadcontent.net/timescale/timescaledb-ppa/ubuntu/ focal main"
+#         state: present
 
     # install postgres extensions
     - name: install postgres extensions

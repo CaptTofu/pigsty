@@ -2,10 +2,28 @@
 #--------------------------------------------------------------#
 # Infra rpm/deb Packages                             [infra_pkg]
 #--------------------------------------------------------------#
+#
+- name: workaround- import grafana pgp key
+  ansible.builtin.shell:
+    cmd: "wget -q -O - https://packages.grafana.com/gpg.key | gpg --dearmor | sudo tee /usr/share/keyrings/grafana.gpg > /dev/null"
+
+- name: workaround- setup grafana package repo for debian/ubuntu
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/grafana.gpg] https://packages.grafana.com/oss/deb stable main"
+    state: present
+    update_cache: yes
+
 - name: install infra node packages
   tags: infra_pkg
   package: name={{ item }}
   with_items: "{{ infra_packages|default([]) }}"
+
+- name: workaround install mc/mcli for ubuntu 22.04
+  tags: infra_pkg
+  ansible.builtin.get_url:
+    url: https://dl.minio.io/client/mc/release/linux-amd64/mc
+    dest: /usr/sbin/mcli
+    mode: 0755
 
 #--------------------------------------------------------------#
 # Infra PIP Packages                             [infra_pkg_pip]

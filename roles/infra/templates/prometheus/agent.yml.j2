@@ -40,7 +40,7 @@ groups:
 
       # PGSQL
       - record: pg_exporter_agent_up
-        expr: up{instance=~".*:{{ pg_exporter_port|default('9630') }}"}
+        expr: up{instance=~".*:{{ pg_exporter_port|default('9187') }}"}
 
       - record: pgbouncer_exporter_agent_up
         expr: up{instance=~".*:{{ pgbouncer_exporter_port|default('9631') }}"}

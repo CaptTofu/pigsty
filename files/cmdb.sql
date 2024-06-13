@@ -1542,7 +1542,7 @@ INSERT INTO pigsty.default_var VALUES
 (940, 'pg_exporter_enabled', 'true', 'PGSQL', 'PG_EXPORTER', 'bool', 'C', 'enable pg_exporter on pgsql hosts?', NULL),
 (941, 'pg_exporter_config', '"pg_exporter.yml"', 'PGSQL', 'PG_EXPORTER', 'string', 'C', 'pg_exporter configuration file name', NULL),
 (942, 'pg_exporter_cache_ttls', '"1,10,60,300"', 'PGSQL', 'PG_EXPORTER', 'string', 'C', 'pg_exporter collector ttl stage in seconds, ''1,10,60,300'' by default', NULL),
-(943, 'pg_exporter_port', '9630', 'PGSQL', 'PG_EXPORTER', 'port', 'C', 'pg_exporter listen port, 9630 by default', NULL),
+(943, 'pg_exporter_port', '9187', 'PGSQL', 'PG_EXPORTER', 'port', 'C', 'pg_exporter listen port, 9187 by default', NULL),
 (944, 'pg_exporter_params', '"sslmode=disable"', 'PGSQL', 'PG_EXPORTER', 'string', 'C', 'extra url parameters for pg_exporter dsn', NULL),
 (945, 'pg_exporter_url', '""', 'PGSQL', 'PG_EXPORTER', 'pgurl', 'C', 'overwrite auto-generate pg dsn if specified', NULL),
 (946, 'pg_exporter_auto_discovery', 'true', 'PGSQL', 'PG_EXPORTER', 'bool', 'C', 'enable auto database discovery? enabled by default', NULL),

@@ -6,10 +6,13 @@
   tags: blackbox_config
   block:
 
+    # these don't work, at least not on ubuntu
     # - blackbox exporter config - #
     - name: render blackbox exporter config
       tags: blackbox_conf
-      template: src=blackbox.yml.j2 dest=/etc/blackbox.yml owner=prometheus mode=0644
+        # workaround
+        #template: src=blackbox.yml.j2 dest=/etc/blackbox.yml owner=prometheus mode=0644
+      template: src=blackbox.yml.j2 dest=/etc/prometheus/blackbox.yml owner=prometheus mode=0644
 
     # - opts - #
     - name: render /etc/default/blackbox
@@ -17,8 +20,9 @@
         dest: /etc/default/blackbox_exporter
         owner: prometheus
         mode: 0755
+          # workaround  #BLACKBOX_EXPORTER_OPTS="--config.file=/etc/blackbox.yml {{ blackbox_options }}"
         content: |
-          BLACKBOX_EXPORTER_OPTS="--config.file=/etc/blackbox.yml {{ blackbox_options }}"
+          BLACKBOX_EXPORTER_OPTS="--config.file=/etc/prometheus/blackbox.yml {{ blackbox_options }}"
 
     # - permission - #
     - name: grant icmp socket permissions to blackbox_exporter
@@ -36,8 +40,11 @@
   tags: blackbox_launch
   when: blackbox_enabled|bool
   block:
+    # workaround
     - name: launch blackbox systemd service
-      systemd: name=blackbox_exporter state=restarted enabled=yes daemon_reload=yes
+      systemd: name=prometheus-blackbox-exporter state=restarted enabled=yes daemon_reload=yes
+    #- name: launch blackbox systemd service
+    #  systemd: name=blackbox_exporter state=restarted enabled=yes daemon_reload=yes
     - name: wait for blackbox service online
       wait_for: host=127.0.0.1 port=9115 state=started
 ...

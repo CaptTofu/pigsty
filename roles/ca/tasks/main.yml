@@ -47,7 +47,7 @@
     # generate ca private key on /etc/pki/ when `ca_create=true`
     - name: generate ca private key
       when: not ca_key_exists.stat.exists|bool and ca_create|bool
-      openssl_privatekey: path=files/pki/ca/ca.key mode=0600
+      community.crypto.openssl_privatekey: path=files/pki/ca/ca.key mode=0600
 
 #--------------------------------------------------------------#
 # Issue CA Cert                                        [ca_cert]
